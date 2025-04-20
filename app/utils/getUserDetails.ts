@@ -3,6 +3,7 @@
 import { getSession } from "../session.server";
 import { getSupabaseClient } from "../utils/getSupabaseClient";
 import { UserProfile, ErrorResponse } from "../types";  // Adjust import paths accordingly
+//import { redirect } from "@remix-run/node";
 
 export async function getUserDetails(request: Request): Promise<UserProfile | ErrorResponse> {
     try {
@@ -18,7 +19,7 @@ export async function getUserDetails(request: Request): Promise<UserProfile | Er
 
     if (authError || !user) {
       console.error("Supabase Auth Error:", authError);
-      return { error: "Failed to fetch user" };
+      throw new Error("Invalid session")
     }
 
     if (!user?.id) {

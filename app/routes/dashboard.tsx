@@ -6,7 +6,7 @@ import { useState } from "react";
 import MenuIcon from "~/components/icons/Menu";
 import ProfilePopup from "~/components/ProfilePopup";
 import Sidebar from "~/components/Sidebar";
-import { getSession } from "~/session.server";
+import { destroySession,getSession } from "~/session.server";
 import { getSupabaseClient } from "~/utils/getSupabaseClient";
 import { getUserDetails } from "../utils/getUserDetails";
 import { UserProfile, ErrorResponse } from "../types";  // Adjust import paths accordingly
@@ -15,7 +15,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   try {
     getSupabaseClient();
   } catch (error) {
-    return redirect("/");
+    return redirect("/login");
   }
 
   const session = await getSession(request.headers.get("Cookie"));
@@ -24,7 +24,17 @@ export async function loader({ request }: LoaderFunctionArgs) {
   if (!token) {
     return redirect("/login");
   }
+  const supabase = getSupabaseClient();
 
+  const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+
+  if (authError || !user) {
+    return redirect("/login", {
+        headers: {
+          "Set-Cookie": await destroySession(session),
+        },
+      });
+  }
   //const data = getUserDetails(request)
   return  getUserDetails(request);
 }
