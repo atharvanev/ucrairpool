@@ -22,6 +22,9 @@ export async function action({request}: ActionFunctionArgs){
   const formData = await request.formData();
   const email = formData.get("email")
   const name = formData.get("name")
+  const lname = formData.get("lname")
+  const number = formData.get("number")
+
   const password = formData.get("password")
 
   if(typeof email != "string" || typeof name !="string" || typeof password != "string"){
@@ -37,6 +40,9 @@ export async function action({request}: ActionFunctionArgs){
       options: {
         data: {
           first_name: name,
+          last_name: lname,
+          email: email,
+          numbers: number,
         }
       }
     }
@@ -126,10 +132,18 @@ export default function SignUp() {
           <TextField
             id="email"
             name="email"
-            label="Email address"
+            label="Email address (only for log in purposes)"
             required
             type="email"
             placeholder="Email address"
+          />
+            <TextField
+            id="number"
+            name="number"
+            label="Phone Number (will only be used by other carpoolers to contact you)"
+            required
+            type="number"
+            placeholder="number"
           />
           <TextField
             id="name"
@@ -137,7 +151,15 @@ export default function SignUp() {
             label="Name"
             required
             type="text"
-            placeholder="Name Surname"
+            placeholder="First Name"
+          />
+           <TextField
+            id="lname"
+            name="lname"
+            label="Last Name"
+            required
+            type="text"
+            placeholder="Last Name"
           />
           <TextField
             id="password"

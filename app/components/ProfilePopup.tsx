@@ -1,9 +1,15 @@
 import { Form, Link } from "@remix-run/react";
 import { useRef, useState } from "react";
 
+import type { UserProfile } from "../types";
+
+type Props = {
+  user: UserProfile;
+};
+
 import Popup from "./Popup";
 
-export default function ProfilePopup() {
+export default function ProfilePopup({ user }: Props) {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const popupButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -16,7 +22,7 @@ export default function ProfilePopup() {
       >
         <img
           className="w-12 h-12 rounded-full ring-2 ring-cyan-300"
-          src="/user.jpg"
+          src={`https://ui-avatars.com/api/?name=${encodeURIComponent(`${user.first_name} ${user.last_name}`)}&background=random`}
           alt="avatar"
         />
       </button>
@@ -28,8 +34,8 @@ export default function ProfilePopup() {
           className="right-0 p-4 mt-2 bg-white rounded-md shadow-sm top-full"
         >
           <div className="px-2 py-2 text-sm">
-            <p className="font-semibold">Thomas Radcliffe</p>
-            <p>radcliffe@demoemail.com</p>
+            <p className="font-semibold">{user.first_name} {user.last_name}</p>
+            <p>{user.email}</p>
           </div>
           <div className="py-2 space-y-1">
             <Link
